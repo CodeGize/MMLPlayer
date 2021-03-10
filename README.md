@@ -12,7 +12,7 @@ MMLPlayer是用Unity开发的，一个用于播放mml音乐文件的程序。
 + android
 + iOS
 
-## 读取进度
+## 当前进度
 + 已支持win10下播放mml文件
 
 ---
