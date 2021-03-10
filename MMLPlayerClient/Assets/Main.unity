@@ -310,12 +310,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecd87869de7340845991e8abd116e60e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeInTime: 0
-  playOutTime: 0
-  fadeOutTime: 0
-  volume: 1
-  keyShift: 0
-  tempoScale: 1
 --- !u!114 &1293227252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,12 +322,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a9a4d0ea49ab44487f314649666ac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numVoices: 8
-  baseFrequency: 31250
-  tickFrequency: 90
-  mixingBufferLength: 200
-  masterVolume: 1
-  PresetTone: {fileID: 4900000, guid: 94ec1e62562d7064a931984feeb47181, type: 3}
 --- !u!1 &1745521260
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,6 +401,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1504807485, guid: 05d75fcfbbb7f394189a92c19a27cb4f, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1632939234, guid: 05d75fcfbbb7f394189a92c19a27cb4f, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1632939234, guid: 05d75fcfbbb7f394189a92c19a27cb4f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1632939234, guid: 05d75fcfbbb7f394189a92c19a27cb4f, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 675819215646952875, guid: 05d75fcfbbb7f394189a92c19a27cb4f,

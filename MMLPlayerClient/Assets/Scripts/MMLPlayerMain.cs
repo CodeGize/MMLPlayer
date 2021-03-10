@@ -16,60 +16,64 @@ namespace MMLPlayer
         public string Path;
     }
 
-    public interface IMusicPlayer
+    public abstract class MusicPlayerBase
     {
-        void Init();
-        void Load(string filepath);
-        void Unload();
-        void Play();
-        void Pause();
-        void Update();
-        int Length { get; }
-        int CurPos { get; }
+        public abstract void Init();
+        public abstract void Load(string filepath);
+        public abstract void Unload();
+        public abstract void Play(bool restart);
+        public abstract void Pause();
+        public abstract void Update();
+        public abstract int Length { get; }
+        public abstract int CurPos { get; }
+
+        public Action OnFinish { get; set; }
     }
 
-    public class SilencePlayer : IMusicPlayer
+    public class SilencePlayer : MusicPlayerBase
     {
-        public int Length => 0;
+        public override int Length => 0;
 
-        public int CurPos => 0;
+        public override int CurPos => 0;
 
-        public void Init()
+        public override void Init()
         {
 
         }
 
-        public void Load(string filepath)
+        public override void Load(string filepath)
         {
 
         }
 
-        public void Pause()
+        public override void Pause()
         {
 
         }
 
-        public void Play()
+        public override void Play(bool restart)
         {
 
         }
 
-        public void Unload()
+        public override void Unload()
         {
 
         }
 
-        public void Update()
+        public override void Update()
         {
 
         }
+
+
     }
 
-    public class MidiMusicPlayer : IMusicPlayer
+    public class MidiMusicPlayer : MusicPlayerBase
     {
         public PlayerMML player;
 
-        public void Init()
+        public override void Init()
         {
             var mml = new PlayerMML();
             mml.Settings.MaxDuration = TimeSpan.MaxValue;
@@ -84,7 +88,7 @@ namespace MMLPlayer
 
         private StreamReader m_stream;
 
-        public int Length
+        public override int Length
         {
             get
             {
@@ -94,7 +98,7 @@ namespace MMLPlayer
             }
         }
 
-        public int CurPos
+        public override int CurPos
         {
             get
             {
@@ -104,7 +108,7 @@ namespace MMLPlayer
             }
         }
 
-        public void Load(string filePath)
+        public override void Load(string filePath)
         {
             Unload();
             m_stream = new StreamReader(File.OpenRead(filePath));
@@ -112,28 +116,32 @@ namespace MMLPlayer
             player.Load(m_stream, true);
         }
 
-        public void Pause()
+        public override void Pause()
         {
             player.Pause();
         }
 
-        public void Play()
+        public override void Play(bool restart)
         {
+            if (restart)
+                player.Stop();
             TimeSpan now = new TimeSpan(MusicPlayer.Time.Ticks);
             player.Play(now);
             Debug.Log("MidiMusicPlayer.Play");
         }
 
-        public void Update()
+        public override void Update()
         {
             if (player.Playing)
             {
                 TimeSpan now = new TimeSpan(MusicPlayer.Time.Ticks);
                 player.Update(now);
+                if (!player.Playing)
+                    OnFinish?.Invoke();
             }
         }
 
-        public void Unload()
+        public override void Unload()
         {
             if (m_stream != null)
             {
@@ -246,6 +254,27 @@ namespace MMLPlayer
 #endif
             //player = new MyMMLMusicPlayer(MyMMLPlayer, Audio);
             player.Init();
+            player.OnFinish = OnPlayFinish;
+        }
+
+        private void OnPlayFinish()
+        {
+            var count = musics.Count;
+            switch (LoopType)
+            {
+                case EmLoopType.LoopOrder:
+                    
+                    var index = (CurMusicIndex + 1 + count) % count;
+                    PlayMusic(index);
+                    break;
+                case EmLoopType.LoopOne:
+                    InternalPlayMusic(true);
+                    break;
+                case EmLoopType.RandomOrder:
+                    var rd = UnityEngine.Random.Range(0, count - 1);
+                    PlayMusic(rd);
+                    break;
+            }
         }
 
         private void ScanMusics()
@@ -289,7 +318,7 @@ namespace MMLPlayer
             }
         }
 
-        private volatile IMusicPlayer player;
+        private MusicPlayerBase player;
 
 
         private void LoadAndPlayMusic()
@@ -299,22 +328,26 @@ namespace MMLPlayer
 
             var item = musics[CurMusicIndex];
             player.Load(item.Path);
+
+            ProgressSlider.maxValue = player.Length;
+
             InternalPlayMusic();
         }
 
 
-        private void InternalPlayMusic()
+        private void InternalPlayMusic(bool restart = false)
         {
             if (player == null)
                 return;
-            ProgressSlider.maxValue = player.Length;
+
             IsPlaying = true;
-            player.Play();
+            player.Play(restart);
         }
 
         private void PauseMusic()
         {
             IsPlaying = false;
+            player.Pause();
         }
 
         private bool m_isPlaying;
@@ -349,7 +382,8 @@ namespace MMLPlayer
 
         public void OnChangeMusicBtnClick(int delta)
         {
-            var index = CurMusicIndex + delta;
+            var count = musics.Count;
+            var index = (CurMusicIndex + delta + count) % count;
             PlayMusic(index);
         }
 
