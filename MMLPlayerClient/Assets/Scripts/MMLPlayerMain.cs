@@ -8,14 +8,6 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace MMLPlayer
 {
-    public class MusicItem
-    {
-        public string Name;
-        public string Singer;
-
-        public string Path;
-    }
-
     public abstract class MusicPlayerBase
     {
         public abstract void Init();
@@ -65,8 +57,6 @@ namespace MMLPlayer
         {
 
         }
-
-
     }
 
     public class MidiMusicPlayer : MusicPlayerBase
@@ -107,12 +97,14 @@ namespace MMLPlayer
                 return (int)player.Elapsed.TotalSeconds;
             }
         }
-
+        private string m_curpath;
         public override void Load(string filePath)
         {
+            if (m_curpath == filePath)
+                return;
+            m_curpath = filePath;
             Unload();
             m_stream = new StreamReader(File.OpenRead(filePath));
-            Debug.Log(filePath);
             player.Load(m_stream, true);
         }
 
@@ -127,7 +119,6 @@ namespace MMLPlayer
                 player.Stop();
             TimeSpan now = new TimeSpan(MusicPlayer.Time.Ticks);
             player.Play(now);
-            Debug.Log("MidiMusicPlayer.Play");
         }
 
         public override void Update()
@@ -151,68 +142,8 @@ namespace MMLPlayer
         }
     }
 
-    //public class MyMMLMusicPlayer : IMusicPlayer
-    //{
-    //    private MyMMLPlayer m_player;
-    //    private AudioSource m_audio;
-    //    MySyntheStation m_syntheStation;
-    //    public MyMMLMusicPlayer(MyMMLPlayer player, AudioSource audio)
-    //    {
-    //        m_player = player;
-    //        m_audio = audio;
-    //        m_syntheStation = GameObject.FindObjectOfType<MySyntheStation>();
-    //    }
-
-    //    public void Init()
-    //    {
-
-    //    }
-
-    //    private MyMMLClip m_curClip;
-
-    //    public int Length => 0;
-
-    //    public int CurPos => 0;
-
-    //    public void Load(string filepath)
-    //    {
-    //        var fname = Path.GetFileNameWithoutExtension(filepath);
-    //        m_curClip = new MyMMLClip(fname, File.ReadAllText(filepath));
-    //        m_syntheStation.PrepareClip(m_curClip);
-    //    }
-
-    //    public void Pause()
-    //    {
-
-    //    }
-
-    //    public void Play()
-    //    {
-    //        if (m_curClip.GenerateAudioClip)
-    //        {
-    //            m_audio.PlayOneShot(m_curClip.AudioClip, 1.0f);
-    //        }
-    //        else
-    //            m_player.Play(m_curClip);
-
-    //    }
-
-    //    public void Unload()
-    //    {
-
-    //    }
-
-    //    public void Update()
-    //    {
-
-    //    }
-    //}
-
     public class MMLPlayerMain : MonoBehaviour
     {
-        //public MyMMLPlayer MyMMLPlayer;
-        //public AudioSource Audio;
-
         public Slider ProgressSlider;
         public Text ProgressLb;
         public MultiImage PlayAndPauseBtn;
@@ -252,18 +183,16 @@ namespace MMLPlayer
 #else
             player = new SilencePlayer();
 #endif
-            //player = new MyMMLMusicPlayer(MyMMLPlayer, Audio);
             player.Init();
             player.OnFinish = OnPlayFinish;
         }
 
         private void OnPlayFinish()
         {
-            var count = musics.Count;
+            var count = m_musics.Count;
             switch (LoopType)
             {
                 case EmLoopType.LoopOrder:
-                    
                     var index = (CurMusicIndex + 1 + count) % count;
                     PlayMusic(index);
                     break;
@@ -277,9 +206,16 @@ namespace MMLPlayer
             }
         }
 
+        private class MusicItem
+        {
+            public string Name;
+            public string Singer;
+            public string Path;
+        }
+
         private void ScanMusics()
         {
-            musics = new List<MusicItem>();
+            m_musics = new List<MusicItem>();
 #if UNITY_EDITOR || UNITY_STANDALONE
             var dir = Application.dataPath + "/../Musics/";
 #else
@@ -297,13 +233,13 @@ namespace MMLPlayer
                 };
                 if (strs.Length >= 2)
                     item.Singer = strs[1];
-                musics.Add(item);
+                m_musics.Add(item);
             }
 
             var listroot = MusicItemCtrl.transform.parent;
-            for (int i = 0; i < musics.Count; i++)
+            for (int i = 0; i < m_musics.Count; i++)
             {
-                MusicItem item = musics[i];
+                MusicItem item = m_musics[i];
                 var ctrlgo = Instantiate(MusicItemCtrl, listroot);
                 ctrlgo.SetActive(true);
                 var ctrl = ctrlgo.GetComponent<MusicItemCtrl>();
@@ -311,10 +247,8 @@ namespace MMLPlayer
                 var txt = item.Name;
                 if (!string.IsNullOrEmpty(item.Singer))
                     txt += "-" + item.Singer;
-                ctrl.TxName.text = txt;
-
-                ctrl.TxNum.text = i.ToString();
-                ctrl.ImgPlaying.enabled = false;
+                ctrl.Init(i,txt);
+                ctrl.Select(false);
             }
         }
 
@@ -326,7 +260,7 @@ namespace MMLPlayer
             if (player == null)
                 return;
 
-            var item = musics[CurMusicIndex];
+            var item = m_musics[CurMusicIndex];
             player.Load(item.Path);
 
             ProgressSlider.maxValue = player.Length;
@@ -376,13 +310,13 @@ namespace MMLPlayer
             }
         }
 
-        public List<MusicItem> musics;
+        private List<MusicItem> m_musics;
 
-        public int CurMusicIndex { get; private set; } = 0;
+        public int CurMusicIndex { get; private set; } = -1;
 
         public void OnChangeMusicBtnClick(int delta)
         {
-            var count = musics.Count;
+            var count = m_musics.Count;
             var index = (CurMusicIndex + delta + count) % count;
             PlayMusic(index);
         }
@@ -395,21 +329,19 @@ namespace MMLPlayer
 
         private void PlayMusic(int index)
         {
-            if (index < 0 || index >= musics.Count)
+            if (index < 0 || index >= m_musics.Count)
                 return;
             if (CurMusicIndex == index)
                 return;
 
             var ctrl = GetCtrlByIndex(CurMusicIndex);
-            ctrl.TxNum.enabled = true;
-            ctrl.ImgPlaying.enabled = false;
-
+            ctrl.Select(false);
+            
             CurMusicIndex = index;
             LoadAndPlayMusic();
 
             ctrl = GetCtrlByIndex(index);
-            ctrl.TxNum.enabled = false;
-            ctrl.ImgPlaying.enabled = true;
+            ctrl.Select(true);
         }
 
         private MusicItemCtrl GetCtrlByIndex(int index)
