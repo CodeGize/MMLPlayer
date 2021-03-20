@@ -20,8 +20,8 @@ MMLPlayer是用Unity开发的，一个用于播放mml音乐文件的程序。
 ---
 ## 有关第三方插件
 windows下使用了以下代码库的部分功能
-+ midi-dot-net：[https://github.com/jstnryan/midi-dot-net](https://github.com/jstnryan/midi-dot-net)
-+ textplayer：[https://github.com/Enichan/textplayer](https://github.com/Enichan/textplayer)
++ [midi-dot-net](https://github.com/jstnryan/midi-dot-net)
++ [textplayer](https://github.com/Enichan/textplayer)
 
 android下使用了以下库
-+ Midi Driver：[https://github.com/billthefarmer/mididriver]
++ [Midi Driver](https://github.com/billthefarmer/mididriver)
