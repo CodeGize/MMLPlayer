@@ -63,3 +63,11 @@ crashlytics-build.properties
 /MMLPlayerClient/Temp
 /MMLPlayerClient/Logs
 /MMLPlayerClient/obj
+/MidiHelper
+/MMLPlayerClient/Backup
+/MMLPlayerClient/_Release
+/MMLPlayerClient/_AndroidOutput
+/MMLPlayerClient/Backup
+/MMLPlayerClient/_AndroidOutput
+/MMLPlayerClient/_Release
+/MMLPlayerClient/.vsconfig
