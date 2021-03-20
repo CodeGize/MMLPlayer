@@ -69,7 +69,7 @@ namespace MMLPlayer
             mml.Settings.MaxDuration = TimeSpan.MaxValue;
             mml.Settings.MaxSize = int.MaxValue;
             mml.Mode = TextPlayer.MML.MMLMode.Mabinogi;
-            mml.SetInstrument(Midi.Instrument.AcousticGrandPiano);
+            mml.SetInstrument(0);
             mml.Normalize = true;
             mml.Loop = false;
             mml.CalculateNormalization();
@@ -178,10 +178,11 @@ namespace MMLPlayer
 
         private void InitPlayer()
         {
-#if UNITY_STANDALONE && !UNITY_EDITOR
-            player = new MidiMusicPlayer();
-#else
+
+#if false//UNITY_EDITOR
             player = new SilencePlayer();
+#else
+            player = new MidiMusicPlayer();
 #endif
             player.Init();
             player.OnFinish = OnPlayFinish;
@@ -219,8 +220,10 @@ namespace MMLPlayer
 #if UNITY_EDITOR || UNITY_STANDALONE
             var dir = Application.dataPath + "/../Musics/";
 #else
-        var dir = Application.persistentDataPath + "/Musics/";
+            var dir = Application.persistentDataPath + "/Musics/";
 #endif
+            if (!Directory.Exists(dir))
+                return;
             var files = Directory.GetFiles(dir, "*.mml", SearchOption.TopDirectoryOnly);
             foreach (var filepath in files)
             {
@@ -259,6 +262,8 @@ namespace MMLPlayer
         {
             if (player == null)
                 return;
+            if (CurMusicIndex < 0 || CurMusicIndex >= m_musics.Count)
+                CurMusicIndex = 1;
 
             var item = m_musics[CurMusicIndex];
             player.Load(item.Path);
@@ -325,6 +330,11 @@ namespace MMLPlayer
         {
             var index = ctrl.GetSiblingIndex() - 1;
             PlayMusic(index);
+        }
+
+        public void OnVolumeBtnClick()
+        {
+
         }
 
         private void PlayMusic(int index)

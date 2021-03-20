@@ -22,15 +22,14 @@
 // THE SOFTWARE.
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using TextPlayer;
 using TextPlayer.MML;
 
 namespace MidiPlayer {
     public class PlayerMML : MultiTrackMMLPlayer, IMidiPlayer {
-        private MidiDevice midi;
+
+        private MidiDevice midi= new MidiDevice();
+
         private TimeSpan elapsed;
         private TimeSpan curTime;
         private float normalizeScalar;
@@ -40,8 +39,7 @@ namespace MidiPlayer {
 
         public PlayerMML()
             : base() {
-            midi = new MidiDevice();
-            midi.SetInstrument(default(Midi.Instrument));
+            midi.SetInstrument(0);
         }
 
         public void RecalculateDuration() {
@@ -76,8 +74,8 @@ namespace MidiPlayer {
             normalizeScalar = 15.0f / maxVol;
         }
 
-        public void SetInstrument(Midi.Instrument instrument) {
-            midi.SetInstrument(instrument);
+        public void SetInstrument(int instrument) {
+            midi.SetInstrument((Midi.Instrument)instrument);
         }
 
         public void CloseDevice() {

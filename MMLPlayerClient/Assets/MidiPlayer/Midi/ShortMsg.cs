@@ -30,7 +30,7 @@ namespace Midi
     /// <summary>
     /// Utility functions for encoding and decoding short messages.
     /// </summary>
-    static class ShortMsg
+    public static class ShortMsg
     {
         /// <summary>
         /// Returns true if the given short message describes a Note On message.

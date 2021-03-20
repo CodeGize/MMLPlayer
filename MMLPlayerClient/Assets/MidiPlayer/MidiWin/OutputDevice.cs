@@ -51,7 +51,7 @@ namespace Midi
     /// <threadsafety static="true" instance="true" />
     /// <seealso cref="Clock"/>
     /// <seealso cref="InputDevice"/>
-    public class OutputDevice : DeviceBase
+    public class OutputDevice : DeviceBase, IOutputDevice
     {
         #region Public Methods and Properties
 
@@ -269,7 +269,7 @@ namespace Midi
             }
         }
 
-#region SysEx
+        #region SysEx
 
         /// <summary>
         /// Sends a System Exclusive (sysex) message to this MIDI output device.
@@ -349,7 +349,7 @@ namespace Midi
         //    }
         //}
 
-#endregion
+        #endregion
 
         #endregion
 

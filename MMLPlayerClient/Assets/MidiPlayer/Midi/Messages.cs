@@ -167,7 +167,7 @@ namespace Midi
         /// </summary>
         public override void SendNow()
         {
-            ((OutputDevice)Device).SendNoteOn(Channel, Pitch, Velocity);
+            ((IOutputDevice)Device).SendNoteOn(Channel, Pitch, Velocity);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace Midi
         /// </summary>
         public override void SendNow()
         {
-            ((OutputDevice)Device).SendNoteOn(Channel.Channel10, (Pitch)Percussion, Velocity);
+            ((IOutputDevice)Device).SendNoteOn(Channel.Channel10, (Pitch)Percussion, Velocity);
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace Midi
         /// </summary>
         public override void SendNow()
         {
-            ((OutputDevice)Device).SendNoteOff(Channel, Pitch, Velocity);
+            ((IOutputDevice)Device).SendNoteOff(Channel, Pitch, Velocity);
         }
 
         /// <summary>
@@ -312,7 +312,7 @@ namespace Midi
         /// </summary>
         public override void SendNow()
         {
-            ((OutputDevice)Device).SendNoteOn(Channel, Pitch, Velocity);
+            ((IOutputDevice)Device).SendNoteOn(Channel, Pitch, Velocity);
             clock.Schedule(new NoteOffMessage(Device, Channel, Pitch, Velocity, Time + Duration));
         }
 
@@ -369,7 +369,7 @@ namespace Midi
         /// </summary>
         public override void SendNow()
         {
-            ((OutputDevice)Device).SendControlChange(Channel, Control, Value);
+            ((IOutputDevice)Device).SendControlChange(Channel, Control, Value);
         }
 
         /// <summary>
@@ -414,7 +414,7 @@ namespace Midi
         /// </summary>
         public override void SendNow()
         {
-            ((OutputDevice)Device).SendPitchBend(Channel, Value);
+            ((IOutputDevice)Device).SendPitchBend(Channel, Value);
         }
 
         /// <summary>
@@ -457,7 +457,7 @@ namespace Midi
         /// </summary>
         public override void SendNow()
         {
-            ((OutputDevice)Device).SendProgramChange(Channel, Instrument);
+            ((IOutputDevice)Device).SendProgramChange(Channel, Instrument);
         }
 
         /// <summary>
@@ -552,7 +552,7 @@ namespace Midi
         /// </summary>
         public override void SendNow()
         {
-            ((OutputDevice)Device).SendSysEx(data);
+            ((IOutputDevice)Device).SendSysEx(data);
         }
 
         /// <summary>
