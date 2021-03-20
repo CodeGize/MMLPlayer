@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace MMLPlayer
 {
+
     public abstract class MusicPlayerBase
     {
         public abstract void Init();
@@ -151,12 +152,13 @@ namespace MMLPlayer
 
         public GameObject MusicItemCtrl;
 
-        void Awake()
+        public void Init()
         {
             ScanMusics();
             InitPlayer();
             ProgressSlider.minValue = 0;
             LoopBtn.SetState(m_loopType);
+            gameObject.SetActive(true);
         }
 
         protected void Update()
@@ -223,7 +225,9 @@ namespace MMLPlayer
             var dir = Application.persistentDataPath + "/Musics/";
 #endif
             if (!Directory.Exists(dir))
+            {
                 return;
+            }
             var files = Directory.GetFiles(dir, "*.mml", SearchOption.TopDirectoryOnly);
             foreach (var filepath in files)
             {
@@ -238,6 +242,7 @@ namespace MMLPlayer
                     item.Singer = strs[1];
                 m_musics.Add(item);
             }
+
 
             var listroot = MusicItemCtrl.transform.parent;
             for (int i = 0; i < m_musics.Count; i++)
