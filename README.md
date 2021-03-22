@@ -25,3 +25,6 @@ windows下使用了以下代码库的部分功能
 
 android下使用了以下库
 + [Midi Driver](https://github.com/billthefarmer/mididriver)
+
+## web下推荐使用以下的代码库
++ [mml-synth](https://github.com/richardwa/mml-synth)
