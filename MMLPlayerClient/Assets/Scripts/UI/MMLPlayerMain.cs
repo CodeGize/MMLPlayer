@@ -6,9 +6,9 @@ using StardustLib.UI;
 using TextPlayer;
 using UnityEngine;
 using UnityEngine.UI;
+
 namespace MMLPlayer
 {
-
     public abstract class MusicPlayerBase
     {
         public abstract void Init();
@@ -21,6 +21,8 @@ namespace MMLPlayer
         public abstract int CurPos { get; }
 
         public Action OnFinish { get; set; }
+
+        public abstract void SetInstrument(int instrunment);
     }
 
     public class SilencePlayer : MusicPlayerBase
@@ -47,6 +49,11 @@ namespace MMLPlayer
         public override void Play(bool restart)
         {
 
+        }
+
+        public override void SetInstrument(int instrunment)
+        {
+            
         }
 
         public override void Unload()
@@ -124,6 +131,8 @@ namespace MMLPlayer
 
         public override void Update()
         {
+            if (player == null)
+                return;
             if (player.Playing)
             {
                 TimeSpan now = new TimeSpan(MusicPlayer.Time.Ticks);
@@ -140,6 +149,11 @@ namespace MMLPlayer
                 m_stream.Close();
                 m_stream.Dispose();
             }
+        }
+
+        public override void SetInstrument(int instrunment)
+        {
+            player.SetInstrument(instrunment);
         }
     }
 
@@ -158,6 +172,7 @@ namespace MMLPlayer
             InitPlayer();
             ProgressSlider.minValue = 0;
             LoopBtn.SetState(m_loopType);
+            InstrumentBtn.Init(m_instrument);
             gameObject.SetActive(true);
         }
 
@@ -181,7 +196,7 @@ namespace MMLPlayer
         private void InitPlayer()
         {
 
-#if false//UNITY_EDITOR
+#if UNITY_EDITOR
             player = new SilencePlayer();
 #else
             player = new MidiMusicPlayer();
@@ -394,6 +409,25 @@ namespace MMLPlayer
         {
             m_loopType = (m_loopType + 1) % 3;
             LoopBtn.SetState(m_loopType);
+        }
+
+
+        public InstrumentSelectWnd InstrumentSelectWnd;
+        public InstrumentBtn InstrumentBtn;
+
+        public void OnChangeInstrumentBtnClick()
+        {
+            InstrumentSelectWnd.Show(OnSelect);
+        }
+
+        private int m_instrument = 0;
+
+        
+        private void OnSelect(int instrument)
+        {
+            m_instrument = (int)instrument;
+            player.SetInstrument(m_instrument);
+            InstrumentBtn.Init(instrument);
         }
     }
 }
