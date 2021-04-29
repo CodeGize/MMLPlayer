@@ -1,4 +1,5 @@
-﻿using Midi;
+﻿#if UNITY_ANDROID
+using Midi;
 using UnityEngine;
 
 namespace MidiPlayer
@@ -69,3 +70,4 @@ namespace MidiPlayer
         }
     }
 }
+#endif

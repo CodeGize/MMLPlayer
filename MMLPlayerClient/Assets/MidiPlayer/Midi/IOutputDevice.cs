@@ -2,6 +2,11 @@
 {
     public interface IOutputDevice
     {
+        void Open();
+        void Close();
+
+        void SilenceAllNotes();
+
         void SendNoteOn(Channel channel, Pitch pitch, int velocity);
         void SendNoteOff(Channel channel, Pitch pitch, int velocity);
         void SendControlChange(Channel channel, Control control, int value);

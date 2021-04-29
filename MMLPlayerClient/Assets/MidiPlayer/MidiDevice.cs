@@ -13,13 +13,9 @@ namespace MidiPlayer {
     }
 
     public class MidiDevice {
-#if UNITY_STANDALONE
-        private Midi.OutputDevice outputDevice;
-#elif UNITY_ANDROID
-        private AndroidMidiDevice outputDevice;
-#elif UNITY_EDITOR
 
-#endif
+        private IOutputDevice outputDevice;
+
         private List<NoteTimeOut> timeOuts;
         private bool muted;
 
@@ -30,6 +26,8 @@ namespace MidiPlayer {
             
 #elif UNITY_ANDROID
             outputDevice = new AndroidMidiDevice();
+#elif UNITY_IOS
+            outputDevice = new IOSMidiDevice();
 #endif
             outputDevice.Open();
             outputDevice.SilenceAllNotes();
