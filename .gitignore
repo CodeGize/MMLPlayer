@@ -67,7 +67,5 @@ crashlytics-build.properties
 /MMLPlayerClient/Backup
 /MMLPlayerClient/_Release
 /MMLPlayerClient/_AndroidOutput
-/MMLPlayerClient/Backup
-/MMLPlayerClient/_AndroidOutput
-/MMLPlayerClient/_Release
+/MMLPlayerClient/_IOSOutput
 /MMLPlayerClient/.vsconfig
