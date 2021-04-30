@@ -12,7 +12,7 @@ namespace MMLPlayer
         public void Init(int instrument)
         {
             Instrument = instrument;
-            Text.text = ((Midi.Instrument)instrument).ToString();
+            Text.text = InstrumentSelectWnd.GetInstrumentName(instrument);
         }
     }
 }
