@@ -1,4 +1,4 @@
-#if UNITY_IOS
+﻿#if UNITY_IOS
 
 using System.Runtime.InteropServices;
 using Midi;
