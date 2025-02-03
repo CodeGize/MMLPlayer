@@ -29,17 +29,20 @@ public class MidiHelper {
     }
 
     public static void SendMsg(int cmd) throws IOException {
-        Log.i(TAG, "SendMsg:" + cmd);
+        //Log.i(TAG, "SendMsg:" + cmd);
         byte[] keyMsgBuff = intToByteArray(cmd);
         midiDriver.write(keyMsgBuff);
     }
 
     public static byte[] intToByteArray(int a) {
-        return new byte[]{
-			(byte) (a & 0xFF),
-			(byte) ((a >> 8) & 0xFF),
-			(byte) ((a >> 16) & 0xFF),
-            (byte) ((a >> 24) & 0xFF)  
-        };
+		byte a0 = (byte) (a & 0xFF);
+		byte a1 = (byte) ((a >> 8) & 0xFF);
+		byte a2 = (byte) ((a >> 16) & 0xFF);
+		byte a3 = (byte) ((a >> 24) & 0xFF);
+		if((a0 & 0xc0) == 0xc0)
+		{
+			return new byte[]{a0,a1};
+		}
+        return new byte[]{a0,a1,a2};
     }
 }
