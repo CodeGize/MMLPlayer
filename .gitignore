@@ -59,6 +59,7 @@ sysinfo.txt
 crashlytics-build.properties
 
 /MMLPlayerClient/_Output
+/MMLPlayerClient/UserSettings
 /MMLPlayerClient/Library
 /MMLPlayerClient/Temp
 /MMLPlayerClient/Logs
